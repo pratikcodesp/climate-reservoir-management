@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One Vote - Secure Decentralized Voting</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    video {
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+      background: black;
+    }
+    #camera-status {
+      margin-top: 0.5rem;
+      font-weight: bold;
+      color: #10b981;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-tr from-blue-50 to-white text-gray-900 min-h-screen">
+  <!-- Navigation Bar -->
+  <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-blue-700">🗳️ One Vote</h1>
+      <div class="space-x-6 text-gray-700 font-medium">
+        <a href="#home" class="hover:text-blue-600 transition">Home</a>
+        <a href="#about" class="hover:text-blue-600 transition">About Us</a>
+        <a href="#help" class="hover:text-blue-600 transition">Help</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-8" id="home">
+    <h1 class="text-4xl font-extrabold text-center mb-8 text-indigo-800">🗳️ One Vote - Decentralized Voting</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Camera Preview -->
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-3 text-indigo-700">📷 Facial Recognition</h2>
+        <video id="video" width="100%" height="auto" autoplay playsinline muted></video>
+        <div id="camera-status">Initializing camera...</div>
+        <p id="liveness-status" class="text-sm mt-2 text-green-600 font-semibold">Liveness: Not Detected</p>
+      </div>
+
+      <!-- Voter Details -->
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-3 text-indigo-700">🧾 Voter Identification</h2>
+        <label class="block mb-1 font-medium">Aadhaar Number</label>
+        <input type="text" id="aadhaar" placeholder="Enter Aadhaar" class="border px-3 py-2 w-full mb-4 rounded-lg" />
+
+        <button onclick="verifyWithWorldID()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg mb-4 transition">🌐 Verify with World ID</button>
+
+        <div id="key-status" class="text-sm text-blue-600">🔐 Voter Key: Not Generated</div>
+        <button onclick="generateVoterKey()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 mt-4 rounded-lg transition">Generate Voter Key</button>
+      </div>
+    </div>
+
+    <!-- Voting Area -->
+    <div class="bg-white mt-10 p-6 rounded-2xl shadow-lg">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700">🗳️ Cast Your Vote</h2>
+      <div id="candidate-list" class="space-y-4">
+        <!-- Candidates will be injected here -->
+      </div>
+      <button onclick="submitVote()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 mt-6 rounded-lg transition">Submit Vote</button>
+    </div>
+
+    <!-- Live Vote Count Display -->
+    <div class="bg-white mt-10 p-6 rounded-2xl shadow-lg">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700">📊 Live Vote Count</h2>
+      <div id="vote-counts" class="text-sm text-gray-800 space-y-2">
+        <!-- Vote results will appear here dynamically -->
+      </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <div class="bg-white mt-10 p-6 rounded-2xl shadow-lg" id="help">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700">🤖 Ask OneVote Bot</h2>
+      <div class="flex items-center">
+        <input id="chat-input" class="flex-1 border px-3 py-2 rounded-l-lg" placeholder="Ask a question...">
+        <button onclick="askBot()" class="bg-gray-800 text-white px-4 py-2 rounded-r-lg">Send</button>
+      </div>
+      <div id="chat-response" class="mt-4 text-sm text-gray-700"></div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="bg-white mt-10 p-6 rounded-2xl shadow-lg">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700">📘 About Us</h2>
+      <p class="text-gray-700 leading-relaxed">
+        One Vote is a decentralized and AI-powered voting platform combining Aadhaar verification, World ID, facial recognition, and ZKPs to ensure privacy, security, and transparency in elections. Each vote is anonymous, tamper-proof, and verifiable without compromising voter identity.
+      </p>
+    </div>
+
+    <footer class="text-center text-gray-500 text-sm py-6 mt-10">
+      © 2025 One Vote. All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <script defer>
+    const video = document.getElementById('video');
+    const statusDiv = document.getElementById('camera-status');
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        statusDiv.textContent = "Camera is active!";
+      } catch (err) {
+        console.error("Camera error:", err);
+        statusDiv.textContent = "Camera not accessible: " + err.message;
+        alert("Camera not accessible: " + err.message);
+      }
+    }
+
+    startCamera();
+  </script>
+  <script defer src="script.js"></script>
+  <script defer src="chatbot.js"></script>
+</body>
+</html>

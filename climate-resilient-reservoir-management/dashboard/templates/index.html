@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Resilient Reservoir Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        .section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .dropdown-container {
+            width: 50%;
+            margin: 20px auto;
+        }
+        .dropdown-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .parameter-section {
+            width: 60%;
+            margin: auto;
+        }
+        .slider-container {
+            padding: 20px;
+        }
+        .slider-label {
+            margin-bottom: 5px;
+            display: block;
+        }
+        .graph-container {
+            margin-top: 20px;
+        }
+        .results-container {
+            margin-top: 20px;
+        }
+        .chatbot-section {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .chatbot-title {
+            color: #34495e;
+        }
+        .chatbot-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .chatbot-submit {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chatbot-conversation {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .bot-message {
+            margin-bottom: 15px;
+        }
+        .bot-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            vertical-align: top;
+        }
+        .bot-message-text {
+            display: inline-block;
+            max-width: 80%;
+            background-color: #d5f5e3;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .feedback-buttons {
+            margin-top: 5px;
+        }
+        .feedback-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .guide-section {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .guide-title {
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Climate Resilient Reservoir Management</h1>
+        </header>
+
+        <div class="dropdown-container">
+            <label class="dropdown-label">Select a Month:</label>
+            <!-- Dropdown will be inserted by Dash -->
+            <div id="month-dropdown"></div>
+        </div>
+
+        <div class="parameter-section">
+            <label class="section-label" style="font-weight: bold;">Adjust Climate Parameters:</label>
+            <div class="slider-container">
+                <label class="slider-label">Precipitation Change (%)</label>
+                <!-- Slider will be inserted by Dash -->
+                <div id="precip-slider"></div>
+                
+                <label class="slider-label">Temperature Increase (°C)</label>
+                <!-- Slider will be inserted by Dash -->
+                <div id="temp-slider"></div>
+                
+                <label class="slider-label">Crop Area Increase (%)</label>
+                <!-- Slider will be inserted by Dash -->
+                <div id="crop-slider"></div>
+                
+                <label class="slider-label">Technology Adoption (%)</label>
+                <!-- Slider will be inserted by Dash -->
+                <div id="tech-slider"></div>
+            </div>
+        </div>
+
+        <div class="graph-container">
+            <!-- Graph will be inserted by Dash -->
+            <div id="precipitation-graph"></div>
+        </div>
+
+        <div class="results-container">
+            <!-- Simulation results will be displayed here -->
+            <div id="simulation-results"></div>
+        </div>
+
+        <div class="chatbot-section">
+            <h2 class="chatbot-title">Climate Advisor Chatbot</h2>
+            <p>Ask questions about climate data, water resource management, or get advice on sustainable practices.</p>
+            
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Ask a question about climate management...">
+            <button id="chatbot-submit" class="chatbot-submit">Submit</button>
+            
+            <div id="chatbot-conversation" class="chatbot-conversation">
+                <div class="bot-message">
+                    <img src="/assets/chatbot-icon.png" class="bot-icon">
+                    <div class="bot-message-text">
+                        Hello! I'm your Climate Management Assistant. Ask me questions about climate data, water resource management, or sustainable practices.
+                    </div>
+                    <div class="feedback-buttons">
+                        <button id="thumbs-up-initial" class="feedback-btn">👍</button>
+                        <button id="thumbs-down-initial" class="feedback-btn">👎</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h2 class="guide-title">User Guide</h2>
+            <p>This tool allows you to simulate the impact of climate changes and agricultural practices on reservoir management. 
+               You can adjust the following parameters to see how each affects water availability and demand in a reservoir:</p>
+            <ul>
+                <li>Precipitation Change (%) – Simulate wet or dry conditions.</li>
+                <li>Temperature Increase (°C) – Simulate the effect of temperature on evaporation.</li>
+                <li>Crop Area Increase (%) – Simulate changes in agricultural water demand.</li>
+                <li>Technology Adoption (%) – Reflect changes in water-use efficiency due to new technologies.</li>
+            </ul>
+            <p>Once you adjust the parameters, the system will simulate the effects on reservoir inflow, outflow, storage, and water demand. 
+               Use the visualizations to interpret the results and make informed decisions.</p>
+        </div>
+    </div>
+
+    <!-- This is where Dash will insert its scripts -->
+</body>
+</html>
